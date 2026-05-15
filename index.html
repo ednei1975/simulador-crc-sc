@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador Grupo Econômico — Construção Civil v2</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f2f5;color:#1a1a1a;font-size:13px}
+.wrap{max-width:1140px;margin:0 auto;padding:14px}
+/* Header */
+.hdr{background:#1a1a1a;color:#fff;padding:14px 20px;border-radius:10px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.hdr h1{font-size:14px;font-weight:600;letter-spacing:-.2px}
+.hdr p{font-size:10px;color:#888;margin-top:2px}
+.hdr-badge{font-size:10px;color:#666;background:#2a2a2a;padding:3px 8px;border-radius:12px}
+/* Tabs */
+.tabs{display:flex;gap:2px;background:#e4e6ea;padding:3px;border-radius:8px;margin-bottom:12px;width:fit-content}
+.tab{padding:5px 14px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;color:#666;transition:all .15s}
+.tab.active{background:#fff;color:#1a1a1a;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.tab:hover:not(.active){color:#333}
+/* Cards */
+.card{background:#fff;border-radius:8px;border:0.5px solid #dde0e6;margin-bottom:10px;overflow:hidden}
+.card-hdr{padding:10px 14px;border-bottom:0.5px solid #eef0f3;display:flex;justify-content:space-between;align-items:center;background:#fafbfc}
+.card-hdr-title{font-size:11px;font-weight:600;color:#444;text-transform:uppercase;letter-spacing:.05em}
+.card-body{padding:12px 14px}
+/* Grid metrics */
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mc{background:#f9fafb;border-radius:7px;padding:9px 12px;border:0.5px solid #e4e6ea}
+.ml{font-size:10px;color:#888;margin-bottom:3px}
+.mv{font-size:16px;font-weight:600;color:#1a1a1a}
+.ms{font-size:10px;color:#aaa;margin-top:1px}
+.pos{color:#0e7c4e}.neg{color:#b91c1c}.warn{color:#b45309}
+/* Tables */
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:10px;font-weight:600;color:#888;padding:5px 8px;border-bottom:0.5px solid #eef0f3;background:#fafbfc;white-space:nowrap;text-transform:uppercase;letter-spacing:.04em}
+td{padding:5px 8px;border-bottom:0.5px solid #f2f4f7;vertical-align:middle;color:#1a1a1a}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbfc}
+td.r{text-align:right;font-variant-numeric:tabular-nums;font-size:12px}
+td.c{text-align:center}
+/* Inputs */
+input[type=number],input[type=text],select{font-size:12px;padding:4px 8px;border:0.5px solid #ccc;border-radius:6px;background:#fff;color:#1a1a1a;width:100%}
+input[type=number]{text-align:right}
+input.sm{width:70px}
+input.md{width:100px}
+select.sm{width:90px}
+/* Buttons */
+.btn{font-size:11px;padding:4px 10px;border:0.5px solid #ccc;border-radius:6px;background:#fff;color:#444;cursor:pointer;white-space:nowrap;transition:all .12s}
+.btn:hover{background:#f5f5f5}
+.btn-add{border-color:#1a73e8;color:#1a73e8;font-weight:500}
+.btn-add:hover{background:#e8f0fe}
+.btn-del{border-color:#dc2626;color:#dc2626}
+.btn-del:hover{background:#fef2f2}
+.btn-sm{padding:2px 7px;font-size:10px}
+.btn-pri{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.btn-pri:hover{background:#333}
+/* Empresa card */
+.emp-card{border:0.5px solid #dde0e6;border-radius:8px;margin-bottom:8px;overflow:hidden;background:#fff}
+.emp-hdr{padding:9px 12px;background:#f9fafb;border-bottom:0.5px solid #eef0f3;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.emp-tipo-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;text-transform:uppercase;letter-spacing:.05em}
+.badge-normal{background:#dbeafe;color:#1e40af}
+.badge-inc{background:#ffedd5;color:#9a3412}
+.badge-spe{background:#dcfce7;color:#166534}
+.emp-body{padding:10px 12px}
+.emp-honorario{font-size:18px;font-weight:700;color:#1a1a1a}
+.emp-sub{font-size:10px;color:#999;margin-top:1px}
+/* Fase selector */
+.fase-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;padding:6px 8px;background:#f9fafb;border-radius:6px;border:0.5px solid #eef0f3}
+.fase-badge{font-size:9px;font-weight:700;padding:1px 6px;border-radius:8px}
+.f0{background:#dbeafe;color:#1e40af}.f1{background:#fef9c3;color:#854d0e}.f2{background:#dcfce7;color:#166534}
+/* DRE styles */
+.dre-wrap{border:0.5px solid #eef0f3;border-radius:7px;overflow:hidden;margin-top:8px}
+.dre-section{background:#f4f6fa;padding:5px 10px;font-size:9px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.06em;border-bottom:0.5px solid #eef0f3}
+.dre-row{display:grid;grid-template-columns:1fr 80px 55px;padding:5px 10px;border-bottom:0.5px solid #f2f4f7;align-items:center;font-size:11px}
+.dre-row:last-child{border-bottom:none}
+.dre-row.sub{padding-left:20px;color:#555}
+.dre-row.tot{background:#f9fafb;font-weight:600}
+.dre-row.res{background:#1a1a1a;color:#fff;font-weight:700;font-size:12px}
+.dre-lbl{font-size:11px}
+.dre-hint{font-size:9px;color:#aaa;margin-top:1px}
+.dre-val{text-align:right;font-variant-numeric:tabular-nums}
+.dre-pct{text-align:right;font-size:10px;color:#aaa}
+.dre-row.sub .dre-val{color:#b91c1c}
+.dre-row.tot .dre-pct{color:#888}
+.dre-pos{color:#0e7c4e}.dre-neg{color:#b91c1c}
+/* Rateio bar */
+.rbar-wrap{margin-bottom:10px}
+.rbar{height:8px;border-radius:4px;overflow:hidden;display:flex;margin:4px 0 2px}
+.rbar-seg{height:100%;transition:width .3s}
+.rbar-legend{display:flex;gap:12px;flex-wrap:wrap}
+.rbar-item{display:flex;align-items:center;gap:4px;font-size:10px;color:#666}
+.rbar-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+/* Section label */
+.sec{font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;padding-bottom:5px;border-bottom:0.5px solid #eef0f3}
+/* CRC table */
+.crc-ref{background:#fffbeb;border:0.5px solid #fde68a;border-radius:7px;padding:8px 12px;margin-top:6px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px}
+.crc-ref-val{font-size:16px;font-weight:700;color:#854d0e}
+.crc-ref-lbl{font-size:10px;color:#92400e}
+.crc-gap{font-size:11px;font-weight:600;padding:2px 8px;border-radius:12px}
+.gap-ok{background:#dcfce7;color:#166534}.gap-hi{background:#dbeafe;color:#1e40af}.gap-lo{background:#fee2e2;color:#b91c1c}
+/* Collapsible */
+.collapse-btn{background:none;border:none;cursor:pointer;font-size:10px;color:#888;display:flex;align-items:center;gap:4px;padding:0}
+.collapse-btn:hover{color:#333}
+.arrow{display:inline-block;transition:transform .2s}.open .arrow{transform:rotate(90deg)}
+/* Params */
+.param-row{display:grid;grid-template-columns:200px 120px 1fr;gap:12px;align-items:center;padding:6px 0;border-bottom:0.5px solid #f2f4f7}
+.param-row:last-child{border-bottom:none}
+.param-lbl{font-size:12px;color:#333}
+.param-hint{font-size:10px;color:#aaa;margin-top:1px}
+/* Responsive */
+@media(max-width:700px){
+  .g4{grid-template-columns:1fr 1fr}
+  .dre-row{grid-template-columns:1fr 70px 45px}
+  .param-row{grid-template-columns:1fr 90px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hdr">
+  <div>
+    <h1>Simulador de Grupo Econômico — Construção Civil v2</h1>
+    <p>Fase individual por empreendimento · CRC-SC 2025 · Rateio proporcional · Tabela Salarial FECONTESC</p>
+  </div>
+  <div class="hdr-badge">SC · Atualizado 05/2025</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('grupo')">Grupo Econômico</div>
+  <div class="tab" onclick="showTab('consolidado')">DRE Consolidado</div>
+  <div class="tab" onclick="showTab('params')">Parâmetros</div>
+</div>
+
+<div id="tab-grupo">
+  <!-- EQUIPE -->
+  <div class="card">
+    <div class="card-hdr">
+      <span class="card-hdr-title">Equipe — Custo por Cargo</span>
+      <button class="btn btn-add btn-sm" onclick="addCargo()">+ Cargo</button>
+    </div>
+    <div class="card-body" style="padding:0">
+      <table>
+        <thead><tr>
+          <th>Cargo</th><th class="r">Salário / mês (R$)</th><th class="r">Horas / mês</th><th class="r">Custo / hora</th><th></th>
+        </tr></thead>
+        <tbody id="tbl-equipe"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- RESUMO EQUIPE -->
+  <div class="g4" id="resumo-equipe" style="margin-bottom:10px"></div>
+
+  <!-- EMPRESAS -->
+  <div class="card">
+    <div class="card-hdr">
+      <span class="card-hdr-title">Empresas do Grupo</span>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn btn-add btn-sm" onclick="addEmpresa('normal')">+ Normal</button>
+        <button class="btn btn-sm" style="border-color:#ea580c;color:#ea580c" onclick="addEmpresa('incorporadora')">+ Incorporadora</button>
+        <button class="btn btn-sm" style="border-color:#16a34a;color:#16a34a" onclick="addEmpresa('spe')">+ SPE</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div id="lista-empresas"></div>
+    </div>
+  </div>
+</div>
+
+<div id="tab-consolidado" style="display:none">
+  <div class="g4" id="metricas-cons" style="margin-bottom:10px"></div>
+  <div class="card">
+    <div class="card-hdr"><span class="card-hdr-title">DRE Consolidado do Grupo</span></div>
+    <div class="card-body" style="padding:0"><div id="dre-cons"></div></div>
+  </div>
+  <div class="card" style="margin-top:10px">
+    <div class="card-hdr"><span class="card-hdr-title">Rateio de Custos por Empresa</span></div>
+    <div class="card-body"><div id="rateio-cons"></div></div>
+  </div>
+</div>
+
+<div id="tab-params" style="display:none">
+  <div class="g2" style="gap:12px">
+    <div class="card">
+      <div class="card-hdr"><span class="card-hdr-title">Escritório</span></div>
+      <div class="card-body">
+        <div class="param-row">
+          <div><div class="param-lbl">Regime tributário</div><div class="param-hint">Regime do escritório contábil</div></div>
+          <select id="p-regime" onchange="render()">
+            <option value="simples">Simples Nacional (6%)</option>
+            <option value="presumido">Lucro Presumido (15,33%)</option>
+            <option value="real">Lucro Real (24,73%)</option>
+          </select>
+          <span></span>
+        </div>
+        <div class="param-row">
+          <div><div class="param-lbl">Encargos trabalhistas</div><div class="param-hint">% sobre folha de pagamento</div></div>
+          <input type="number" id="p-encargos" value="0" min="0" max="100" step="1" onchange="render()">
+          <span style="font-size:11px;color:#aaa">%</span>
+        </div>
+        <div class="param-row">
+          <div><div class="param-lbl">Despesas fixas</div><div class="param-hint">% sobre CSP (infra, admin, aluguel)</div></div>
+          <input type="number" id="p-desp" value="30" min="0" max="100" step="1" onchange="render()">
+          <span style="font-size:11px;color:#aaa">%</span>
+        </div>
+        <div class="param-row">
+          <div><div class="param-lbl">Margem alvo</div><div class="param-hint">% sobre receita bruta</div></div>
+          <input type="number" id="p-margem" value="25" min="0" max="80" step="1" onchange="render()">
+          <span style="font-size:11px;color:#aaa">%</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><span class="card-hdr-title">Construção Civil — Bases de Honorário</span></div>
+      <div class="card-body">
+        <div class="param-row">
+          <div><div class="param-lbl">1ª obra / Incorporadora</div><div class="param-hint">Honorário base para a primeira obra</div></div>
+          <input type="number" id="p-cc1" value="3900" min="0" step="100" onchange="render()">
+          <span style="font-size:11px;color:#aaa">R$/mês</span>
+        </div>
+        <div class="param-row">
+          <div><div class="param-lbl">Obras adicionais</div><div class="param-hint">Honorário por obra adicional</div></div>
+          <input type="number" id="p-ccN" value="1600" min="0" step="100" onchange="render()">
+          <span style="font-size:11px;color:#aaa">R$/mês</span>
+        </div>
+        <div class="param-row">
+          <div><div class="param-lbl">SPE</div><div class="param-hint">Honorário por SPE (fase plena)</div></div>
+          <input type="number" id="p-ccSpe" value="2500" min="0" step="100" onchange="render()">
+          <span style="font-size:11px;color:#aaa">R$/mês</span>
+        </div>
+        <div class="param-row">
+          <div><div class="param-lbl">Mínimo por empreendimento</div><div class="param-hint">Piso mesmo na Fase 1</div></div>
+          <input type="number" id="p-ccMin" value="800" min="0" step="50" onchange="render()">
+          <span style="font-size:11px;color:#aaa">R$/mês</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:0">
+    <div class="card-hdr"><span class="card-hdr-title">Tabela CRC-SC 2025 — Referência (Média SC)</span></div>
+    <div class="card-body" style="padding:0">
+      <table>
+        <thead><tr><th>Segmento</th><th>Regime Cliente</th><th>Faixa Docs</th><th>Funcionários</th><th class="r">Referência (R$/mês)</th></tr></thead>
+        <tbody id="tbl-crc"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+<script>
+// ─── DADOS GLOBAIS ───────────────────────────────────────────
+const T = { simples:6, presumido:15.33, real:24.73 };
+const FASES = [
+  { label:'Fase 1 — Estruturação', pct:0.30 },
+  { label:'Fase 2 — Vendas/Obras',  pct:0.60 },
+  { label:'Fase 3 — Plena',         pct:1.00 }
+];
+const SEG  = { comercio:'Comércio', industria:'Indústria', servicos:'Serviços' };
+const REG_CLI = { mei:'MEI', simples:'Simples Nacional', presumido:'Lucro Presumido', real:'Lucro Real', coop:'Cooperativa' };
+const REGIAO = ['Grande Florianópolis','Norte / Vale do Itajaí','Sul Catarinense','Planalto Serrano','Oeste Catarinense'];
+const REGIAO_MULT = [1.15, 1.04, 1.01, 0.93, 0.87];
+const DOCS_LABEL = ['até 50 docs','51–100 docs','101–300 docs','301–600 docs','601–900 docs'];
+const FUNC_LABEL = ['Sem funcionários','1–5 func.','6–15 func.','16–30 func.'];
+const COLORS = ['#3b82f6','#f97316','#22c55e','#a855f7','#ef4444','#06b6d4','#eab308'];
+
+// CRC-SC base table: [segmento][regime_cliente][docs_idx] = valor médio SC sem funcionários
+const CRC = {
+  comercio: {
+    mei:       [320,  null, null, null, null],
+    simples:   [null, 721,  1100, 1580, null],
+    presumido: [null, null, 1250, 1800, 2400],
+    real:      [null, null, null, 2200, 3000],
+    coop:      [null, null, 1400, 2000, 2700]
+  },
+  industria: {
+    mei:       [370,  null, null, null, null],
+    simples:   [null, 830,  1260, 1820, null],
+    presumido: [null, null, 1440, 2070, 2760],
+    real:      [null, null, null, 2530, 3450],
+    coop:      [null, null, 1610, 2300, 3100]
+  },
+  servicos: {
+    mei:       [345,  null, null, null, null],
+    simples:   [null, 779,  1188, 1706, null],
+    presumido: [null, null, 1350, 1944, 2592],
+    real:      [null, null, null, 2376, 3240],
+    coop:      [null, null, 1512, 2160, 2916]
+  }
+};
+const FUNC_ADD = [0, 280, 650, 1300]; // adicionado ao valor base por faixa de funcionários
+
+// Equipe
+let equipe = [
+  { id:1, cargo:'Gestor',       salario:9200, horas:168 },
+  { id:2, cargo:'Coordenador',  salario:6800, horas:168 },
+  { id:3, cargo:'Analista',     salario:4500, horas:168 },
+  { id:4, cargo:'Assistente',   salario:3200, horas:168 },
+  { id:5, cargo:'Auxiliar',     salario:2100, horas:168 }
+];
+let eqId = 10;
+
+// Empresas
+let empresas = [];
+let empId = 1;
+
+function P(){
+  return {
+    regimeEsc: document.getElementById('p-regime')?.value  || 'simples',
+    e: +document.getElementById('p-encargos')?.value       || 0,
+    d: +document.getElementById('p-desp')?.value           || 30,
+    m: +document.getElementById('p-margem')?.value         || 25,
+    cc1:   +document.getElementById('p-cc1')?.value        || 3900,
+    ccN:   +document.getElementById('p-ccN')?.value        || 1600,
+    ccSpe: +document.getElementById('p-ccSpe')?.value      || 2500,
+    ccMin: +document.getElementById('p-ccMin')?.value      || 800
+  };
+}
+
+// ─── FORMATAÇÃO ───────────────────────────────────────────────
+const fmt  = (v,d=0)=>v==null?'—':'R$ '+v.toFixed(d).replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+const fmtN = (v,d=2)=>v==null?'—':v.toFixed(d).replace('.',',');
+const pct  = (v,base)=>base?((v/base)*100).toFixed(1)+'%':'—';
+
+// ─── CÁLCULOS ─────────────────────────────────────────────────
+function custoHora(cargo){
+  return cargo.horas>0 ? cargo.salario/cargo.horas : 0;
+}
+
+function calcEmpresa(emp){
+  const p = P();
+  const t = T[p.regimeEsc]/100;
+  const d = p.d/100;
+  const m = p.m/100;
+  const encMult = 1 + p.e/100;
+
+  if(emp.tipo==='normal'){
+    // CSP baseado em horas alocadas
+    let cspBruto=0, detalhes=[];
+    equipe.forEach(cg=>{
+      const h = emp.horas[cg.id]||0;
+      const ch = custoHora(cg);
+      const custo = h*ch;
+      if(h>0) detalhes.push({ cargo:cg.cargo, horas:h, custo });
+      cspBruto += custo;
+    });
+    const encargos = cspBruto*(encMult-1);
+    const csp = cspBruto*encMult;
+    // Honorário = CSP*(1+d)/(1-t-m)
+    const denom = 1-t-m;
+    const honorario = denom>0 ? csp*(1+d)/denom : 0;
+    const impostos  = honorario*t;
+    const recLiq    = honorario-impostos;
+    const despFixas = csp*d;
+    const lucroBruto= recLiq-csp;
+    const lucroLiq  = lucroBruto-despFixas;
+    const totalHoras= detalhes.reduce((s,x)=>s+x.horas,0);
+    // CRC-SC referência
+    const crcRef    = getCRC(emp.seg, emp.regimeCli, emp.docs, emp.func, emp.regiao);
+    return { emp, honorario, impostos, recLiq, csp, cspBruto, encargos, despFixas, lucroBruto, lucroLiq, totalHoras, detalhes, crcRef, tipo:'normal' };
+  }
+
+  if(emp.tipo==='incorporadora'){
+    let honorario=0, obrasDetalhe=[];
+    emp.obras.forEach((ob,i)=>{
+      const base = i===0 ? p.cc1 : p.ccN;
+      const raw  = base * FASES[ob.fase].pct;
+      const hon  = Math.max(raw, p.ccMin);
+      honorario += hon;
+      obrasDetalhe.push({ ...ob, base, hon, fase_label:FASES[ob.fase].label, pct_fase:FASES[ob.fase].pct });
+    });
+    const denom    = 1-t-m;
+    const csp      = denom>0 ? honorario*(1-t-m)/(1+d) : 0;
+    const impostos = honorario*t;
+    const recLiq   = honorario-impostos;
+    const despFixas= csp*d;
+    const lucroBruto=recLiq-csp;
+    const lucroLiq = lucroBruto-despFixas;
+    return { emp, honorario, impostos, recLiq, csp, cspBruto:csp, encargos:0, despFixas, lucroBruto, lucroLiq, obrasDetalhe, tipo:'incorporadora', crcRef:null };
+  }
+
+  if(emp.tipo==='spe'){
+    let honorario=0, speDetalhe=[];
+    emp.spes.forEach(sp=>{
+      const raw = p.ccSpe * FASES[sp.fase].pct;
+      const hon = Math.max(raw, p.ccMin);
+      honorario += hon;
+      speDetalhe.push({ ...sp, hon, fase_label:FASES[sp.fase].label, pct_fase:FASES[sp.fase].pct });
+    });
+    const denom    = 1-t-m;
+    const csp      = denom>0 ? honorario*(1-t-m)/(1+d) : 0;
+    const impostos = honorario*t;
+    const recLiq   = honorario-impostos;
+    const despFixas= csp*d;
+    const lucroBruto=recLiq-csp;
+    const lucroLiq = lucroBruto-despFixas;
+    return { emp, honorario, impostos, recLiq, csp, cspBruto:csp, encargos:0, despFixas, lucroBruto, lucroLiq, speDetalhe, tipo:'spe', crcRef:null };
+  }
+}
+
+function getCRC(seg, regimeCli, docs, func, regiao){
+  try{
+    const base = CRC[seg][regimeCli][docs];
+    if(!base) return null;
+    const val = (base + FUNC_ADD[func||0]) * REGIAO_MULT[regiao||0];
+    return val;
+  }catch(e){ return null; }
+}
+
+// ─── RENDER EQUIPE ────────────────────────────────────────────
+function renderEquipe(){
+  const tbody=document.getElementById('tbl-equipe');
+  tbody.innerHTML='';
+  let totalFolha=0, totalHoras=0;
+  equipe.forEach(cg=>{
+    const ch=custoHora(cg);
+    totalFolha+=cg.salario; totalHoras+=cg.horas;
+    tbody.innerHTML+=`<tr>
+      <td><input type="text" value="${cg.cargo}" onchange="equipe.find(x=>x.id===${cg.id}).cargo=this.value;render()"></td>
+      <td class="r"><input type="number" class="sm" value="${cg.salario}" min="0" step="100" onchange="equipe.find(x=>x.id===${cg.id}).salario=+this.value;render()"></td>
+      <td class="r"><input type="number" class="sm" value="${cg.horas}" min="1" step="1" onchange="equipe.find(x=>x.id===${cg.id}).horas=+this.value;render()"></td>
+      <td class="r" style="font-weight:500">${fmt(ch,2)}</td>
+      <td class="c"><button class="btn btn-del btn-sm" onclick="removeCargo(${cg.id})">✕</button></td>
+    </tr>`;
+  });
+  const p=P();
+  const folhaTotal=totalFolha*(1+p.e/100);
+  document.getElementById('resumo-equipe').innerHTML=`
+    <div class="mc"><div class="ml">Folha bruta / mês</div><div class="mv">${fmt(totalFolha)}</div></div>
+    <div class="mc"><div class="ml">Folha c/ encargos (${p.e}%)</div><div class="mv">${fmt(folhaTotal)}</div></div>
+    <div class="mc"><div class="ml">Cargos ativos</div><div class="mv">${equipe.length}</div></div>
+    <div class="mc"><div class="ml">Custo médio / hora</div><div class="mv">${totalHoras>0?fmt(folhaTotal/totalHoras,2):'—'}</div></div>`;
+}
+
+function addCargo(){
+  equipe.push({ id:eqId++, cargo:'Novo Cargo', salario:3000, horas:168 });
+  render();
+}
+function removeCargo(id){
+  if(equipe.length<=1){ alert('Mantenha ao menos 1 cargo.'); return; }
+  equipe=equipe.filter(x=>x.id!==id);
+  empresas.forEach(e=>{ if(e.horas) delete e.horas[id]; });
+  render();
+}
+
+// ─── RENDER EMPRESAS ──────────────────────────────────────────
+function renderEmpresas(){
+  const el=document.getElementById('lista-empresas');
+  if(empresas.length===0){
+    el.innerHTML=`<div style="text-align:center;padding:24px;color:#aaa;font-size:12px">Nenhuma empresa. Clique em + para adicionar.</div>`;
+    return;
+  }
+  el.innerHTML='';
+  empresas.forEach(emp=>{
+    const res=calcEmpresa(emp);
+    el.innerHTML+=buildEmpresaCard(emp,res);
+  });
+}
+
+function badgeClass(tipo){ return tipo==='normal'?'badge-normal':tipo==='incorporadora'?'badge-inc':'badge-spe'; }
+function badgeLabel(tipo){ return tipo==='normal'?'Normal':tipo==='incorporadora'?'Incorporadora':'SPE'; }
+
+function buildEmpresaCard(emp,res){
+  const id=emp.id;
+  const margPct=res.honorario>0?(res.lucroLiq/res.honorario*100):0;
+  const margClass=margPct>=20?'pos':margPct>=10?'warn':'neg';
+
+  let bodyHtml='';
+
+  // Top metrics
+  bodyHtml+=`<div class="g4" style="margin-bottom:10px">
+    <div class="mc"><div class="ml">Honorário / mês</div><div class="mv">${fmt(res.honorario,0)}</div></div>
+    <div class="mc"><div class="ml">CSP</div><div class="mv">${fmt(res.csp,0)}</div></div>
+    <div class="mc"><div class="ml">Margem líquida</div><div class="mv ${margClass}">${fmtN(margPct,1)}%</div></div>
+    <div class="mc"><div class="ml">Lucro / mês</div><div class="mv ${margClass}">${fmt(res.lucroLiq,0)}</div></div>
+  </div>`;
+
+  // Normal: horas por cargo
+  if(emp.tipo==='normal'){
+    bodyHtml+=`<div class="sec">Horas alocadas por cargo / mês</div>
+    <table style="margin-bottom:10px"><thead><tr><th>Cargo</th><th class="r">Horas</th><th class="r">Custo / hora</th><th class="r">CSP (R$)</th></tr></thead><tbody>`;
+    equipe.forEach(cg=>{
+      const h=emp.horas[cg.id]||0;
+      const ch=custoHora(cg);
+      bodyHtml+=`<tr>
+        <td>${cg.cargo}</td>
+        <td class="r"><input type="number" class="sm" style="width:60px" value="${h}" min="0" step="1" onchange="setHoras(${id},${cg.id},+this.value)"></td>
+        <td class="r">${fmt(ch,2)}</td>
+        <td class="r">${fmt(h*ch,0)}</td>
+      </tr>`;
+    });
+    bodyHtml+=`</tbody></table>`;
+
+    // Campos do cliente
+    bodyHtml+=`<div class="sec">Perfil do cliente</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+      <select onchange="setEmp(${id},'seg',this.value)">
+        ${Object.entries(SEG).map(([k,v])=>`<option value="${k}" ${emp.seg===k?'selected':''}>${v}</option>`).join('')}
+      </select>
+      <select onchange="setEmp(${id},'regimeCli',this.value)">
+        ${Object.entries(REG_CLI).map(([k,v])=>`<option value="${k}" ${emp.regimeCli===k?'selected':''}>${v}</option>`).join('')}
+      </select>
+      <select onchange="setEmp(${id},'docs',+this.value)">
+        ${DOCS_LABEL.map((l,i)=>`<option value="${i}" ${emp.docs===i?'selected':''}>${l}</option>`).join('')}
+      </select>
+      <select onchange="setEmp(${id},'func',+this.value)">
+        ${FUNC_LABEL.map((l,i)=>`<option value="${i}" ${emp.func===i?'selected':''}>${l}</option>`).join('')}
+      </select>
+      <select onchange="setEmp(${id},'regiao',+this.value)">
+        ${REGIAO.map((l,i)=>`<option value="${i}" ${emp.regiao===i?'selected':''}>${l}</option>`).join('')}
+      </select>
+    </div>`;
+
+    // CRC referência
+    if(res.crcRef){
+      const gap=((res.honorario-res.crcRef)/res.crcRef*100);
+      const gClass=Math.abs(gap)<=15?'gap-ok':gap>15?'gap-hi':'gap-lo';
+      bodyHtml+=`<div class="crc-ref">
+        <div><div class="crc-ref-lbl">Referência CRC-SC 2025</div><div style="font-size:10px;color:#92400e">${SEG[emp.seg]} · ${REG_CLI[emp.regimeCli]} · ${DOCS_LABEL[emp.docs]} · ${FUNC_LABEL[emp.func]} · ${REGIAO[emp.regiao]}</div></div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="crc-ref-val">${fmt(res.crcRef,0)}</div>
+          <span class="crc-gap ${gClass}">${gap>=0?'+':''}${fmtN(gap,1)}% vs CRC</span>
+        </div>
+      </div>`;
+    }
+  }
+
+  // Incorporadora: obras
+  if(emp.tipo==='incorporadora'){
+    bodyHtml+=`<div class="sec">Empreendimentos</div>`;
+    res.obrasDetalhe.forEach((ob,i)=>{
+      const fIdx=ob.fase;
+      bodyHtml+=`<div class="fase-row">
+        <span class="fase-badge f${fIdx}">F${fIdx+1}</span>
+        <input type="text" style="width:160px" value="${ob.nome}" onchange="setObra(${id},${ob.id},'nome',this.value)">
+        <select class="sm" onchange="setObra(${id},${ob.id},'fase',+this.value)">
+          ${FASES.map((f,fi)=>`<option value="${fi}" ${fIdx===fi?'selected':''}>${f.label}</option>`).join('')}
+        </select>
+        <span style="font-size:11px;color:#666">${fmt(ob.hon,0)}/mês</span>
+        <span style="font-size:10px;color:#aaa">${i===0?'1ª obra':'adicional'} × ${(ob.pct_fase*100).toFixed(0)}%</span>
+        <button class="btn btn-del btn-sm" onclick="removeObra(${id},${ob.id})">✕</button>
+      </div>`;
+    });
+    bodyHtml+=`<button class="btn btn-add btn-sm" style="margin-top:6px" onclick="addObra(${id})">+ Empreendimento</button>`;
+  }
+
+  // SPE
+  if(emp.tipo==='spe'){
+    bodyHtml+=`<div class="sec">SPEs</div>`;
+    res.speDetalhe.forEach(sp=>{
+      const fIdx=sp.fase;
+      bodyHtml+=`<div class="fase-row">
+        <span class="fase-badge f${fIdx}">F${fIdx+1}</span>
+        <input type="text" style="width:160px" value="${sp.nome}" onchange="setSpe(${id},${sp.id},'nome',this.value)">
+        <select class="sm" onchange="setSpe(${id},${sp.id},'fase',+this.value)">
+          ${FASES.map((f,fi)=>`<option value="${fi}" ${fIdx===fi?'selected':''}>${f.label}</option>`).join('')}
+        </select>
+        <span style="font-size:11px;color:#666">${fmt(sp.hon,0)}/mês</span>
+        <button class="btn btn-del btn-sm" onclick="removeSpe(${id},${sp.id})">✕</button>
+      </div>`;
+    });
+    bodyHtml+=`<button class="btn btn-add btn-sm" style="margin-top:6px" onclick="addSpe(${id})">+ SPE</button>`;
+  }
+
+  // DRE Individual
+  bodyHtml+=`<details style="margin-top:10px"><summary style="cursor:pointer;font-size:10px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.05em;padding:5px 0">▸ DRE Individual</summary>${buildDRE(res)}</details>`;
+
+  return `<div class="emp-card" id="emp-${id}">
+    <div class="emp-hdr">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="emp-tipo-badge ${badgeClass(emp.tipo)}">${badgeLabel(emp.tipo)}</span>
+        <input type="text" style="font-size:13px;font-weight:600;border:none;background:transparent;padding:0;width:200px;color:#1a1a1a" value="${emp.nome}" onchange="setEmp(${id},'nome',this.value)">
+      </div>
+      <button class="btn btn-del btn-sm" onclick="removeEmpresa(${id})">Remover</button>
+    </div>
+    <div class="emp-body">${bodyHtml}</div>
+  </div>`;
+}
+
+function buildDRE(res){
+  const R=res.honorario, t=T[P().regimeEsc]/100;
+  const p=P();
+  function row(lbl,hint,val,base,indent,cls,neg){
+    const pctVal=base>0?(val/base*100).toFixed(1)+'%':'—';
+    const valStyle=neg?'color:#b91c1c':'';
+    return `<div class="dre-row ${cls||''} ${indent?'sub':''}">
+      <div><div class="dre-lbl">${lbl}</div>${hint?`<div class="dre-hint">${hint}</div>`:''}  </div>
+      <div class="dre-val" style="${valStyle}">${neg?'(':''}${fmt(val,0)}${neg?')':''}</div>
+      <div class="dre-pct">${pctVal}</div>
+    </div>`;
+  }
+  let html=`<div class="dre-wrap">`;
+  html+=`<div class="dre-section">1. Receita Bruta de Serviços</div>`;
+  html+=row('Honorários mensais','Receita total de honorários',R,R,0,'');
+  html+=`<div class="dre-section">2. Deduções</div>`;
+  html+=row('Impostos sobre faturamento',`${P().regimeEsc==='simples'?'Simples Nacional 6%':P().regimeEsc==='presumido'?'Lucro Presumido 15,33%':'Lucro Real 24,73%'}`,res.impostos,R,1,'',true);
+  html+=row('(=) Receita Líquida','',res.recLiq,R,0,'tot');
+  html+=`<div class="dre-section">3. Custo dos Serviços Prestados (CSP)</div>`;
+  if(res.detalhes && res.detalhes.length>0){
+    res.detalhes.forEach(d=>{ html+=row(d.cargo,`${d.horas}h × custo/hora`,d.custo,R,1,'',true); });
+    if(P().e>0) html+=row('Encargos trabalhistas',`${P().e}% sobre folha`,res.encargos,R,1,'',true);
+  } else {
+    html+=row('CSP implícito','Calculado pela lógica de margem e fase',res.csp,R,1,'',true);
+  }
+  html+=row('(=) Lucro Bruto','',res.lucroBruto,R,0,'tot '+(res.lucroBruto>=0?'dre-pos':'dre-neg'));
+  html+=`<div class="dre-section">4. Despesas Operacionais</div>`;
+  html+=row('Despesas fixas',`${P().d}% sobre CSP (infra, aluguel, admin)`,res.despFixas,R,1,'',true);
+  const ebit=res.lucroBruto-res.despFixas;
+  html+=row('(=) EBIT','',ebit,R,0,'tot '+(ebit>=0?'dre-pos':'dre-neg'));
+  html+=`<div class="dre-section">5. Resultado</div>`;
+  const margPct=R>0?(res.lucroLiq/R*100).toFixed(1):0;
+  html+=`<div class="dre-row res">
+    <div><div class="dre-lbl">Lucro Líquido</div><div class="dre-hint" style="color:#888">Margem alvo: ${P().m}%</div></div>
+    <div class="dre-val ${res.lucroLiq>=0?'pos':'neg'}">${fmt(res.lucroLiq,0)}</div>
+    <div class="dre-pct" style="color:#aaa">${margPct}%</div>
+  </div>`;
+  html+='</div>';
+  return html;
+}
+
+// ─── RENDER CONSOLIDADO ───────────────────────────────────────
+function renderConsolidado(){
+  const resultados=empresas.map(e=>calcEmpresa(e));
+  const totR = resultados.reduce((s,r)=>s+r.honorario,0);
+  const totI = resultados.reduce((s,r)=>s+r.impostos,0);
+  const totRL= resultados.reduce((s,r)=>s+r.recLiq,0);
+  const totC = resultados.reduce((s,r)=>s+r.csp,0);
+  const totLB= resultados.reduce((s,r)=>s+r.lucroBruto,0);
+  const totD = resultados.reduce((s,r)=>s+r.despFixas,0);
+  const ebit = totLB-totD;
+  const totLL= resultados.reduce((s,r)=>s+r.lucroLiq,0);
+  const marg = totR>0?(totLL/totR*100):0;
+  const margClass=marg>=20?'pos':marg>=10?'warn':'neg';
+
+  document.getElementById('metricas-cons').innerHTML=`
+    <div class="mc"><div class="ml">Receita bruta total</div><div class="mv">${fmt(totR,0)}</div><div class="ms">${empresas.length} empresa${empresas.length!==1?'s':''}</div></div>
+    <div class="mc"><div class="ml">CSP total</div><div class="mv">${fmt(totC,0)}</div><div class="ms">${totR>0?pct(totC,totR)+' da receita':''}</div></div>
+    <div class="mc"><div class="ml">Lucro líquido total</div><div class="mv ${margClass}">${fmt(totLL,0)}</div></div>
+    <div class="mc"><div class="ml">Margem líquida</div><div class="mv ${margClass}">${fmtN(marg,1)}%</div><div class="ms">Alvo: ${P().m}%</div></div>`;
+
+  // DRE consolidado
+  function dr(lbl,hint,val,neg,indent,cls){
+    const pctVal=totR>0?(val/totR*100).toFixed(1)+'%':'—';
+    return `<div class="dre-row ${cls||''} ${indent?'sub':''}">
+      <div><div class="dre-lbl">${lbl}</div>${hint?`<div class="dre-hint">${hint}</div>`:''}  </div>
+      <div class="dre-val" style="${neg?'color:#b91c1c':''}">${neg?'(':''}${fmt(val,0)}${neg?')':''}</div>
+      <div class="dre-pct">${pctVal}</div>
+    </div>`;
+  }
+  let html=`<div class="dre-wrap">`;
+  html+=`<div class="dre-section">1. Receita Bruta — por empresa</div>`;
+  resultados.forEach((r,i)=>{
+    html+=dr(r.emp.nome||'(sem nome)',`${badgeLabel(r.emp.tipo)} · ${fmt(r.honorario,0)}`,r.honorario,false,1,'');
+  });
+  html+=dr('(=) Receita Bruta Total','',totR,false,0,'tot');
+  html+=`<div class="dre-section">2. Deduções</div>`;
+  html+=dr('Impostos sobre faturamento','',totI,true,1,'');
+  html+=dr('(=) Receita Líquida Total','',totRL,false,0,'tot');
+  html+=`<div class="dre-section">3. CSP — por empresa</div>`;
+  resultados.forEach(r=>{ html+=dr(r.emp.nome||'(sem nome)',`CSP: ${fmt(r.csp,0)}`,r.csp,true,1,''); });
+  html+=dr('(=) Lucro Bruto Consolidado','',totLB,false,0,'tot '+(totLB>=0?'dre-pos':'dre-neg'));
+  html+=`<div class="dre-section">4. Despesas Operacionais</div>`;
+  html+=dr(`Despesas fixas rateadas`,`${P().d}% sobre CSP total`,totD,true,1,'');
+  html+=dr('(=) EBIT Consolidado','',ebit,false,0,'tot '+(ebit>=0?'dre-pos':'dre-neg'));
+  html+=`<div class="dre-section">5. Resultado Consolidado</div>`;
+  html+=`<div class="dre-row res">
+    <div><div class="dre-lbl">Lucro Líquido Consolidado</div><div class="dre-hint" style="color:#888">Margem alvo: ${P().m}% · ${empresas.length} empresas</div></div>
+    <div class="dre-val ${totLL>=0?'pos':'neg'}">${fmt(totLL,0)}</div>
+    <div class="dre-pct" style="color:#aaa">${fmtN(marg,1)}%</div>
+  </div>`;
+  html+='</div>';
+  document.getElementById('dre-cons').innerHTML=html;
+
+  // Rateio
+  let rHtml=`<div class="rbar-wrap"><div class="rbar">`;
+  resultados.forEach((r,i)=>{
+    const w=totR>0?(r.honorario/totR*100):0;
+    rHtml+=`<div class="rbar-seg" style="width:${w}%;background:${COLORS[i%COLORS.length]}"></div>`;
+  });
+  rHtml+=`</div><div class="rbar-legend">`;
+  resultados.forEach((r,i)=>{
+    const w=totR>0?(r.honorario/totR*100).toFixed(1):0;
+    rHtml+=`<div class="rbar-item"><div class="rbar-dot" style="background:${COLORS[i%COLORS.length]}"></div>${r.emp.nome||'(sem nome)'} <strong>${w}%</strong></div>`;
+  });
+  rHtml+=`</div></div>`;
+  rHtml+=`<table style="margin-top:10px"><thead><tr>
+    <th>Empresa</th><th>Tipo</th><th class="r">Honorário</th><th class="r">CSP</th><th class="r">Desp. fixas</th><th class="r">Lucro líquido</th><th class="r">Margem</th><th class="r">Peso rateio</th>
+  </tr></thead><tbody>`;
+  resultados.forEach((r,i)=>{
+    const mg=r.honorario>0?(r.lucroLiq/r.honorario*100):0;
+    const mgC=mg>=20?'pos':mg>=10?'warn':'neg';
+    const peso=totR>0?(r.honorario/totR*100).toFixed(1):0;
+    rHtml+=`<tr>
+      <td style="display:flex;align-items:center;gap:6px"><div class="rbar-dot" style="background:${COLORS[i%COLORS.length]}"></div>${r.emp.nome}</td>
+      <td><span class="emp-tipo-badge ${badgeClass(r.emp.tipo)}">${badgeLabel(r.emp.tipo)}</span></td>
+      <td class="r">${fmt(r.honorario,0)}</td>
+      <td class="r">${fmt(r.csp,0)}</td>
+      <td class="r">${fmt(r.despFixas,0)}</td>
+      <td class="r ${mgC}">${fmt(r.lucroLiq,0)}</td>
+      <td class="r ${mgC}">${fmtN(mg,1)}%</td>
+      <td class="r">${peso}%</td>
+    </tr>`;
+  });
+  rHtml+=`</tbody></table>`;
+  document.getElementById('rateio-cons').innerHTML=rHtml;
+}
+
+// ─── RENDER PARAMS ────────────────────────────────────────────
+function renderParams(){
+  const tbody=document.getElementById('tbl-crc');
+  if(!tbody) return;
+  tbody.innerHTML='';
+  const segs=Object.keys(CRC);
+  segs.forEach(seg=>{
+    const regimes=Object.keys(CRC[seg]);
+    regimes.forEach(reg=>{
+      CRC[seg][reg].forEach((base,di)=>{
+        if(!base) return;
+        const val=base*REGIAO_MULT[0]; // Grande Florianópolis como exemplo
+        tbody.innerHTML+=`<tr>
+          <td>${SEG[seg]}</td>
+          <td>${REG_CLI[reg]}</td>
+          <td>${DOCS_LABEL[di]}</td>
+          <td>Sem func.</td>
+          <td class="r" style="font-weight:500">${fmt(val,0)}</td>
+        </tr>`;
+      });
+    });
+  });
+}
+
+// ─── MUTAÇÕES ────────────────────────────────────────────────
+function setEmp(id,field,val){ const e=empresas.find(x=>x.id===id); if(e) e[field]=val; render(); }
+function setHoras(id,cid,val){ const e=empresas.find(x=>x.id===id); if(e){ if(!e.horas)e.horas={}; e.horas[cid]=val; } render(); }
+function setObra(id,oid,field,val){ const e=empresas.find(x=>x.id===id); if(e){ const o=e.obras.find(x=>x.id===oid); if(o) o[field]=val; } render(); }
+function setSpe(id,sid,field,val){ const e=empresas.find(x=>x.id===id); if(e){ const s=e.spes.find(x=>x.id===sid); if(s) s[field]=val; } render(); }
+
+let obraId=100, speId=200;
+function addObra(id){ const e=empresas.find(x=>x.id===id); if(e){ e.obras.push({id:obraId++,nome:'Nova Obra',fase:0}); render(); }}
+function removeObra(id,oid){ const e=empresas.find(x=>x.id===id); if(e && e.obras.length>1){ e.obras=e.obras.filter(x=>x.id!==oid); render(); }}
+function addSpe(id){ const e=empresas.find(x=>x.id===id); if(e){ e.spes.push({id:speId++,nome:'Nova SPE',fase:0}); render(); }}
+function removeSpe(id,sid){ const e=empresas.find(x=>x.id===id); if(e && e.spes.length>1){ e.spes=e.spes.filter(x=>x.id!==sid); render(); }}
+
+function addEmpresa(tipo){
+  const id=empId++;
+  const horas={};
+  equipe.forEach(cg=>horas[cg.id]=0);
+  if(tipo==='normal'){
+    empresas.push({ id, tipo:'normal', nome:`Empresa ${id}`, seg:'comercio', regimeCli:'simples', regiao:0, docs:1, func:0, horas });
+  } else if(tipo==='incorporadora'){
+    empresas.push({ id, tipo:'incorporadora', nome:`Incorporadora ${id}`, obras:[{id:obraId++,nome:'Empreendimento 1',fase:0}] });
+  } else {
+    empresas.push({ id, tipo:'spe', nome:`SPE ${id}`, spes:[{id:speId++,nome:'SPE 1',fase:0}] });
+  }
+  render();
+}
+function removeEmpresa(id){ empresas=empresas.filter(x=>x.id!==id); render(); }
+
+// ─── TABS ─────────────────────────────────────────────────────
+let currentTab='grupo';
+function showTab(t){
+  currentTab=t;
+  ['grupo','consolidado','params'].forEach(tab=>{
+    document.getElementById('tab-'+tab).style.display=(tab===t)?'block':'none';
+    document.querySelectorAll('.tab').forEach((el,i)=>{
+      el.classList.toggle('active',['grupo','consolidado','params'][i]===t);
+    });
+  });
+  if(t==='consolidado') renderConsolidado();
+  if(t==='params') renderParams();
+}
+
+// ─── RENDER PRINCIPAL ─────────────────────────────────────────
+function render(){
+  renderEquipe();
+  if(currentTab==='grupo') renderEmpresas();
+  if(currentTab==='consolidado') renderConsolidado();
+  if(currentTab==='params') renderParams();
+}
+
+// ─── INIT ─────────────────────────────────────────────────────
+(function init(){
+  // Empresa Normal de exemplo
+  const h1={};
+  equipe.forEach((cg,i)=>h1[cg.id]=[20,35,60,40,20][i]||0);
+  empresas.push({ id:empId++, tipo:'normal', nome:'Atlas Contabilidade Ltda', seg:'servicos', regimeCli:'simples', regiao:0, docs:2, func:1, horas:h1 });
+
+  // Incorporadora
+  empresas.push({ id:empId++, tipo:'incorporadora', nome:'Atlas Incorporadora', obras:[
+    { id:obraId++, nome:'Residencial Ipê',    fase:2 },
+    { id:obraId++, nome:'Comercial Center',   fase:0 },
+    { id:obraId++, nome:'Villa Park',         fase:1 }
+  ]});
+
+  // SPE
+  empresas.push({ id:empId++, tipo:'spe', nome:'Atlas SPEs', spes:[
+    { id:speId++, nome:'SPE Residencial Ipê',  fase:2 },
+    { id:speId++, nome:'SPE Comercial Center', fase:0 }
+  ]});
+
+  render();
+})();
+</script>
+</body>
+</html>
