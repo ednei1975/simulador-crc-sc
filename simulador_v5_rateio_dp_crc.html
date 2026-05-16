@@ -1,0 +1,360 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;font-weight:500;font-size:11px;color:var(--color-text-secondary);padding:6px 8px;border-bottom:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);white-space:nowrap}
+td{padding:6px 8px;border-bottom:0.5px solid var(--color-border-tertiary);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--color-background-secondary)}
+select,input{font-size:12px;padding:4px 7px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary)}
+input[type=number]{width:58px;text-align:right}
+input[type=text]{width:100%}
+.btn{font-size:11px;padding:4px 10px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);cursor:pointer}
+.btn:hover{background:var(--color-background-secondary)}
+.btn-add{border-color:var(--color-border-info);color:var(--color-text-info)}
+.btn-del{border-color:var(--color-border-danger);color:var(--color-text-danger);padding:2px 7px}
+.btn-primary{background:var(--color-background-info);color:var(--color-text-info);border-color:var(--color-border-info);font-weight:500;padding:6px 14px}
+.mc{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px}
+.ml{font-size:13px;color:var(--color-text-secondary)}.mv{font-size:20px;font-weight:500}.ms{font-size:11px;color:var(--color-text-tertiary);margin-top:2px}
+.g4{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:10px;margin-bottom:1rem}
+.tabs{display:flex;gap:4px;margin-bottom:1rem;flex-wrap:wrap}
+.tab{font-size:12px;padding:5px 12px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary)}
+.tab.active{background:var(--color-background-info);color:var(--color-text-info);border-color:var(--color-border-info);font-weight:500}
+.sec{font-size:10px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;padding-bottom:5px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.fg{display:flex;flex-direction:column;gap:3px}.fl{font-size:11px;color:var(--color-text-secondary)}
+.frow{display:flex;gap:7px;flex-wrap:wrap;align-items:flex-end;margin-bottom:8px}
+.pr{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.pr label{font-size:11px;color:var(--color-text-secondary);min-width:200px}
+.pr input[type=range]{flex:1;min-width:80px}
+.pv{font-size:12px;font-weight:500;min-width:44px;text-align:right}
+.divider{height:0.5px;background:var(--color-border-tertiary);margin:.8rem 0}
+.equipe-box{border:0.5px solid var(--color-border-info);border-radius:var(--border-radius-lg);background:var(--color-background-info);padding:12px 14px;margin-bottom:1rem}
+.equipe-title{font-size:11px;font-weight:500;color:var(--color-text-info);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);margin-bottom:8px;overflow:hidden}
+.card.cc{border-color:#D85A30}
+.ch{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--color-background-secondary);cursor:pointer;border-bottom:0.5px solid var(--color-border-tertiary)}
+.ch:hover{background:var(--color-background-tertiary)}
+.cb{padding:10px 12px;display:none}.cb.open{display:block}
+.neg{color:#A32D2D}.pos{color:#1D9E75}.warn{color:#BA7517}
+.badge{display:inline-block;font-size:10px;padding:2px 6px;border-radius:3px;font-weight:500}
+.bcc{background:#FFF3E0;color:#993C1D}.bnorm{background:#E6F1FB;color:#185FA5}
+.cc-box{border:0.5px solid #D85A30;border-radius:var(--border-radius-md);background:#FFF8F5;padding:10px 12px;margin-bottom:8px}
+.fase-btn{font-size:10px;padding:3px 8px;border:0.5px solid #D85A30;border-radius:var(--border-radius-md);cursor:pointer;background:#FFF8F5;color:#993C1D;white-space:nowrap}
+.fase-btn.active{background:#D85A30;color:#fff;font-weight:500}
+.itbl{border:0.5px solid #FCDCC8;border-radius:var(--border-radius-md);overflow:hidden;margin-bottom:6px}
+.ihr{display:grid;grid-template-columns:1fr auto auto auto;gap:6px;padding:3px 8px;background:#FCEEE6;font-size:10px;font-weight:500;color:#993C1D;text-transform:uppercase}
+.ir{display:grid;grid-template-columns:1fr auto auto auto;gap:6px;align-items:center;padding:5px 8px;border-bottom:0.5px solid #FCDCC8;font-size:11px}
+.ir:last-child{border-bottom:none}
+.dp-box{border:0.5px solid var(--color-border-info);border-radius:var(--border-radius-md);background:var(--color-background-info);padding:10px 12px;margin-bottom:8px}
+.rinfo{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:8px 12px;margin-bottom:8px;font-size:11px;color:var(--color-text-secondary)}
+.rbar{height:7px;border-radius:4px;overflow:hidden;display:flex;margin:6px 0}
+.dre-box{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;margin-bottom:1rem}
+.dh2{padding:8px 14px;background:var(--color-background-secondary);border-bottom:0.5px solid var(--color-border-tertiary)}
+.ds{background:var(--color-background-secondary);padding:4px 14px;font-size:10px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;border-bottom:0.5px solid var(--color-border-tertiary)}
+.dr{display:grid;grid-template-columns:1fr auto auto;align-items:center;padding:5px 14px;border-bottom:0.5px solid var(--color-border-tertiary);gap:4px}
+.dr:last-child{border-bottom:none}
+.dl{font-size:12px}.dsub{font-size:10px;color:var(--color-text-tertiary);margin-top:1px}
+.dv{font-size:12px;text-align:right;min-width:100px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.dp2{font-size:10px;color:var(--color-text-tertiary);text-align:right;min-width:44px}
+.i1{padding-left:16px}
+.dt{background:var(--color-background-secondary)}.dt .dl,.dt .dv{font-weight:500}
+.dres{background:var(--color-background-info)}.dres .dl{font-weight:500;font-size:13px;color:var(--color-text-info)}.dres .dv{font-weight:500;font-size:13px;color:var(--color-text-info)}.dres .dp2{color:var(--color-text-info)}
+.grupo-bar{background:var(--color-background-info);border-radius:var(--border-radius-lg);padding:10px 14px;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.crc-sec{border:0.5px solid var(--color-border-info);border-radius:var(--border-radius-lg);overflow:hidden;margin-bottom:1rem}
+.crc-head{padding:8px 14px;background:var(--color-background-info);font-size:13px;font-weight:500;color:var(--color-text-info);border-bottom:0.5px solid var(--color-border-info)}
+.crc-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:4px;padding:6px 14px;border-bottom:0.5px solid var(--color-border-tertiary);align-items:center;font-size:12px}
+.crc-row:last-child{border-bottom:none}
+.crc-hdr{background:var(--color-background-secondary);font-weight:500;font-size:10px;color:var(--color-text-secondary)}
+.bok{background:#EAF3DE;color:#3B6D11}.bwarn{background:#FAEEDA;color:#854F0B}.bdanger{background:#FCEBEB;color:#A32D2D}
+</style>
+
+<div style="padding:.25rem 0">
+<div class="tabs">
+  <div class="tab active" onclick="showTab('grupo')">Grupo + DP</div>
+  <div class="tab" onclick="showTab('cons')">DRE consolidado</div>
+  <div class="tab" onclick="showTab('params')">Parâmetros</div>
+</div>
+
+<div id="tab-grupo">
+  <div class="frow" style="margin-bottom:10px">
+    <div class="fg" style="flex:2;min-width:140px"><span class="fl">Nome do grupo</span><input type="text" id="gn" placeholder="Ex: Grupo WF" oninput="renderAll()"></div>
+    <div style="display:flex;align-items:flex-end;gap:6px;flex-wrap:wrap">
+      <button class="btn btn-add" onclick="addE('normal')">+ Empresa</button>
+      <button class="btn" style="border-color:#D85A30;color:#993C1D" onclick="addE('incorporadora')">+ Incorporadora</button>
+      <button class="btn" style="border-color:#BA7517;color:#854F0B" onclick="addE('spe')">+ SPE</button>
+      <button class="btn btn-primary" onclick="showTab('cons')">DRE ↗</button>
+    </div>
+  </div>
+  <div class="equipe-box">
+    <div class="equipe-title"><span>Equipe compartilhada</span><button class="btn btn-add" style="background:transparent" onclick="addC()">+ Cargo</button></div>
+    <div style="overflow-x:auto"><table><thead><tr><th>Cargo</th><th>Nível</th><th>Salário</th><th>C/h puro</th><th>C/h c/enc</th><th>Horas</th><th>Custo</th><th style="width:28px"></th></tr></thead><tbody id="eqB"></tbody><tfoot id="eqF"></tfoot></table></div>
+    <div id="eqR" style="margin-top:10px"></div>
+  </div>
+  <div id="gbar"></div>
+  <div id="econt"></div>
+</div>
+
+<div id="tab-cons" style="display:none"><div id="dreEl"></div><div class="g4" id="metEl"></div><div id="crcEl"></div></div>
+
+<div id="tab-params" style="display:none">
+  <div class="sec">contratação</div>
+  <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">
+    <button class="tab active" id="ct-clt" onclick="setCt('clt')">CLT (68%)</button>
+    <button class="tab" id="ct-pj" onclick="setCt('pj')">PJ (0%)</button>
+    <button class="tab" id="ct-mix" onclick="setCt('mix')">Misto</button>
+  </div>
+  <div class="sec">custos</div>
+  <div class="pr"><label>Carga horária</label><input type="range" id="pH" min="100" max="220" step="5" value="176" oninput="sP()"><span class="pv" id="pvH">176h</span></div>
+  <div class="pr"><label>% Improdutivas</label><input type="range" id="pI" min="5" max="40" value="15" oninput="sP()"><span class="pv" id="pvI">15%</span></div>
+  <div class="pr"><label>% Encargos</label><input type="range" id="pE" min="0" max="100" value="68" oninput="sP()"><span class="pv" id="pvE">68%</span></div>
+  <div class="pr"><label>% Despesas fixas</label><input type="range" id="pD" min="10" max="60" value="30" oninput="sP()"><span class="pv" id="pvD">30%</span></div>
+  <div class="pr"><label>% Margem alvo</label><input type="range" id="pM" min="0" max="60" value="25" oninput="sP()"><span class="pv" id="pvM">25%</span></div>
+  <div class="divider"></div>
+  <div class="sec">departamento pessoal</div>
+  <div class="frow">
+    <div class="fg"><span class="fl">R$/vida adicional</span><input type="number" id="dpV" value="70" min="0" step="5" style="width:80px" oninput="renderAll()"></div>
+    <div class="fg"><span class="fl">1ª vida inclusa?</span><select id="dpI" onchange="renderAll()"><option value="1">Sim</option><option value="0">Não</option></select></div>
+    <div class="fg"><span class="fl">R$/consignado</span><input type="number" id="dpC" value="30" min="0" step="5" style="width:80px" oninput="renderAll()"></div>
+  </div>
+  <div class="divider"></div>
+  <div class="sec">regime tributário</div>
+  <div class="pr"><label>Alíquota Simples (%)</label><input type="range" id="tS" min="4" max="20" step="0.5" value="6" oninput="sP()"><span class="pv" id="tvS">6,0%</span></div>
+  <div class="divider"></div>
+  <div class="sec" style="color:#993C1D">construção civil</div>
+  <div class="frow">
+    <div class="fg"><span class="fl">1ª obra (R$)</span><input type="number" id="ccI" value="3900" min="0" step="100" style="width:80px" oninput="renderAll()"></div>
+    <div class="fg"><span class="fl">Obra adic. (R$)</span><input type="number" id="ccA" value="1600" min="0" step="100" style="width:80px" oninput="renderAll()"></div>
+    <div class="fg"><span class="fl">SPE (R$)</span><input type="number" id="ccS" value="2500" min="0" step="100" style="width:80px" oninput="renderAll()"></div>
+  </div>
+</div>
+</div>
+
+<script>
+const CG=[{k:'aux',l:'Auxiliar',n:[2200,2217,2308,2424,2546]},{k:'ass',l:'Assistente',n:[2546,2674,2808,2949,3097]},{k:'jr',l:'Analista JR',n:[3097,3252,3415,3586,3766]},{k:'pl',l:'Analista PL',n:[3766,3955,4153,4361,4580]},{k:'sr',l:'Analista SR',n:[4580,4809,5050,5303,5569]},{k:'ma',l:'An. Master',n:[5569,5848,6141,6449,6772]},{k:'cj',l:'Coord. Jr',n:[5853,6146,6454,6777,7116]},{k:'cp',l:'Coord. Pl',n:[7116,7472,7847,8240,8652]},{k:'cs',l:'Coord. Sr',n:[8652,9085,9539,10016,10517]},{k:'g1',l:'Gestor N1',n:[10517,11043,11596,12176,12785]},{k:'g2',l:'Gestor N2',n:[12785,13425,14097,14802,15543]},{k:'g3',l:'Gestor N3',n:[15543,16321,17138,17995,18895]}];
+const NV=['A','B','C','D','E'];
+const SN={comercio:'Comércio',industria:'Indústria',servicos:'Serviços',cooperativa:'Cooperativa',agricola:'Agrícola',entidade:'Entidade'};
+const RG=['Gde. Florianópolis','Norte/Vale Itajaí','Sul Catarinense','Planalto/Alto Vale','Oeste Catarinense','Média SC'];
+const DC=['Até 100','101-300','301-600','601-900'];
+const FU=['Sem func.','Até 5','6-15','16-30'];
+const CO=['#378ADD','#1D9E75','#D85A30','#BA7517','#7B4EA0','#C43D5C','#2E7D9A','#5C7A1F'];
+const FS=[{l:'F1',p:.30,c:'#BA7517'},{l:'F2',p:.60,c:'#1D9E75'},{l:'F3',p:1,c:'#D85A30'}];
+const RCC_C_S=[[[879.73,754.31,738.97,698.42,536.12,721.51],[1236.98,1009.89,999,945.28,806.57,999.54],[1833.28,1544.45,1503.39,1497.4,1445.63,1564.83],[2897.24,2377.7,2349.87,2420.72,2536.66,2516.44]],[[1061.53,977.76,914.2,888.78,677.48,903.96],[1320.87,1263.81,1206.41,1175.82,1035.53,1200.48],[2038,1883.83,1853.86,1840.95,1775.6,1878.46],[3273.79,2993.43,2989.04,2719.86,2563.77,2907.98]],[[1326.39,1398.59,1202.46,1288.51,1024.65,1248.12],[1786.76,1749.47,1618.03,1562.45,1567.62,1656.88],[2748.68,2573.04,2080.31,2032.13,2169,2320.63],[3511.47,3798.87,2832.25,3232.59,3269.46,3328.92]],[[1724.3,1818.16,1563.2,1675.05,1332.03,1622.56],[2322.78,2274.3,2103.45,2031.19,2037.89,2153.93],[3573.3,3344.95,2704.41,2641.79,2819.68,3016.83],[4564.91,4938.53,3681.93,4202.36,4250.29,4327.61]]];
+function getCRC(seg,docs,func,reg){try{if(seg==='comercio')return RCC_C_S[docs][func][reg];return RCC_C_S[docs][func][reg];}catch(e){return 0;}}
+
+let P={h:176,i:15,e:68,d:30,m:25},aliq=6;
+let eq=[],emps=[],eid=0,eqid=0;
+const hp=()=>Math.round(P.h*(1-P.i/100));
+const chP=s=>s/hp();
+const chT=s=>s*(1+P.e/100)/hp();
+const gC=k=>CG.find(c=>c.k===k)||CG[0];
+const ccP=()=>({i1:+(document.getElementById('ccI').value)||3900,ia:+(document.getElementById('ccA').value)||1600,sp:+(document.getElementById('ccS').value)||2500});
+const dpPar=()=>({v:+(document.getElementById('dpV').value)||70,inc:+(document.getElementById('dpI').value),c:+(document.getElementById('dpC').value)||30});
+const fmt=(v,d=2)=>'R$\u202f'+v.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
+const f0=v=>'R$\u202f'+Math.round(v).toLocaleString('pt-BR');
+const pp=v=>v.toFixed(1)+'%';
+
+// Honorário contabilidade REAL
+function honCtb(e){
+  const c=ccP();
+  if(e.tipo==='incorporadora')return(e.obras||[]).map((o,i)=>(i===0?c.i1:c.ia)*FS[o.fase??2].p).reduce((a,b)=>a+b,0);
+  if(e.tipo==='spe')return(e.spes||[]).reduce((a,s)=>a+c.sp*FS[s.fase??2].p,0);
+  return getCRC(e.seg||'comercio',e.docs||0,e.func||0,e.regiao||0);
+}
+
+// Honorário DP
+function honDP(e){
+  const d=dpPar();
+  const tot=(e.prol||0)+(e.nfunc||0)+(e.nrpa||0);
+  const cob=d.inc?Math.max(0,tot-1):tot;
+  const recVidas=cob*d.v;
+  const recConsig=(e.nconsig||0)*d.c;
+  return{tot,cob,recVidas,recConsig,total:recVidas+recConsig};
+}
+
+// Honorário TOTAL da entidade (base do rateio)
+function honTotal(e){return honCtb(e)+honDP(e).total;}
+
+// CRC referência (tabela completa)
+function crcRef(e){
+  if(e.tipo!=='normal') return null;
+  return getCRC(e.seg||'comercio',e.docs||0,e.func||0,e.regiao||0);
+}
+
+// Honorário pleno CC (sem fase)
+function honPlenoCC(e){
+  const c=ccP();
+  if(e.tipo==='incorporadora'){const o=e.obras||[];return o.length?c.i1+Math.max(0,o.length-1)*c.ia:0;}
+  if(e.tipo==='spe')return(e.spes||[]).length*c.sp;
+  return 0;
+}
+
+const cspPuro=()=>eq.reduce((a,l)=>a+chP(gC(l.k).n[l.nv])*l.hrs,0);
+const cspEnc=()=>cspPuro()*(P.e/100);
+const cspTot=()=>cspPuro()+cspEnc();
+const despPerE=()=>emps.length?cspTot()*(P.d/100)/emps.length:0;
+
+// RATEIO proporcional ao honorário TOTAL (Ctb + DP)
+function calcRateio(){
+  const tot=emps.reduce((a,e)=>a+honTotal(e),0);
+  return emps.map(e=>{
+    const ht=honTotal(e);
+    const w=tot>0?ht/tot:1/Math.max(emps.length,1);
+    return{e,ht,w,csP:cspPuro()*w,csE:cspEnc()*w,csT:cspTot()*w};
+  });
+}
+
+function calcEmp(e,r){
+  const al=aliq/100;
+  const desp=despPerE()*(parseFloat(e.comp)||1);
+  const dp=honDP(e);
+  const ctb=honCtb(e);
+  const rbTotal=ctb+dp.total;
+  const ded=rbTotal*al;
+  const rl=rbTotal-ded;
+  const lb=rl-r.csT;
+  const res=rl-r.csT-desp;
+  const mReal=rbTotal>0?(res/rbTotal*100):0;
+  const mAlvo=rbTotal*(P.m/100);
+  return{ctb,dp,rbTotal,ded,rl,lb,desp,res,mReal,mAlvo};
+}
+
+// ── UI ──
+function addC(k='sr',nv=0,hrs=0){eq.push({id:++eqid,k,nv,hrs});renderAll();}
+function rmC(id){eq=eq.filter(l=>l.id!==id);renderAll();}
+function uE(id,f,v){const l=eq.find(x=>x.id===id);if(l){l[f]=v;renderAll();}}
+function addE(t){
+  const e={id:++eid,nome:'',tipo:t,comp:'1.0',open:true,prol:1,nfunc:0,nrpa:0,nconsig:0};
+  if(t==='normal'){e.seg='comercio';e.regiao=5;e.docs=0;e.func=0;}
+  else if(t==='incorporadora'){e.obras=[{id:1,nome:'Obra 01',fase:2}];}
+  else{e.spes=[{id:1,nome:'SPE 01',fase:2}];}
+  emps.push(e);renderAll();
+}
+function rmE(id){emps=emps.filter(e=>e.id!==id);renderAll();}
+function togE(id){const e=emps.find(x=>x.id===id);if(e){e.open=!e.open;renderEmps();}}
+function uEmp(id,f,v){const e=emps.find(x=>x.id===id);if(e){e[f]=v;renderAll();}}
+function addO(eid){const e=emps.find(x=>x.id===eid);if(e){e.obras.push({id:Date.now(),nome:'Obra '+String(e.obras.length+1).padStart(2,'0'),fase:2});renderAll();}}
+function rmO(eid,oid){const e=emps.find(x=>x.id===eid);if(e){e.obras=e.obras.filter(o=>o.id!==oid);renderAll();}}
+function sFO(eid,oid,fi){const e=emps.find(x=>x.id===eid);if(e){const o=e.obras.find(x=>x.id===oid);if(o){o.fase=fi;renderAll();}}}
+function addS(eid){const e=emps.find(x=>x.id===eid);if(e){e.spes.push({id:Date.now(),nome:'SPE '+String(e.spes.length+1).padStart(2,'0'),fase:2});renderAll();}}
+function rmS(eid,sid){const e=emps.find(x=>x.id===eid);if(e){e.spes=e.spes.filter(s=>s.id!==sid);renderAll();}}
+function sSF(eid,sid,fi){const e=emps.find(x=>x.id===eid);if(e){const s=e.spes.find(x=>x.id===sid);if(s){s.fase=fi;renderAll();}}}
+function fbI(eid,iid,fi,fn){return FS.map((f,i)=>`<button class="fase-btn${fi===i?' active':''}" style="${fi===i?'background:'+f.c+';border-color:'+f.c+';color:#fff':''}" onclick="${fn}(${eid},${iid},${i})">${f.l} ${pp(f.p*100)}</button>`).join('');}
+
+function renderEq(){
+  const b=document.getElementById('eqB'),f=document.getElementById('eqF');
+  if(!eq.length){b.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--color-text-tertiary);padding:12px">Nenhum cargo.</td></tr>';f.innerHTML='';document.getElementById('eqR').innerHTML='';return;}
+  let tT=0,tH=0;
+  b.innerHTML=eq.map(l=>{const c=gC(l.k),s=c.n[l.nv],cp=chP(s),ct=chT(s),cu=ct*l.hrs;tT+=cu;tH+=l.hrs;
+    return`<tr><td><select onchange="uE(${l.id},'k',this.value)">${CG.map(x=>`<option value="${x.k}"${x.k===l.k?' selected':''}>${x.l}</option>`).join('')}</select></td><td><select onchange="uE(${l.id},'nv',+this.value)">${NV.map((n,i)=>`<option value="${i}"${i===l.nv?' selected':''}>${n} ${f0(c.n[i])}</option>`).join('')}</select></td><td style="font-size:11px">${f0(s)}</td><td style="font-size:11px">${fmt(cp)}</td><td style="font-size:11px;font-weight:500">${fmt(ct)}</td><td><input type="number" min="0" max="500" value="${l.hrs||''}" placeholder="0" oninput="uE(${l.id},'hrs',+this.value)"></td><td style="font-size:11px;font-weight:500">${l.hrs>0?fmt(cu):'—'}</td><td><button class="btn btn-del" onclick="rmC(${l.id})">x</button></td></tr>`;
+  }).join('');
+  f.innerHTML=`<tr style="background:var(--color-background-secondary)"><td colspan="5" style="font-size:11px;font-weight:500">TOTAL</td><td style="font-size:11px;font-weight:500">${tH}h</td><td style="font-size:11px;font-weight:500">${fmt(tT)}</td><td></td></tr>`;
+  const rat=calcRateio(),totH=rat.reduce((a,r)=>a+r.ht,0);
+  if(emps.length>0&&totH>0){
+    const bars=rat.map((r,i)=>`<div style="flex:${r.w};background:${CO[i%CO.length]}"></div>`).join('');
+    const leg=rat.map((r,i)=>`<span style="font-size:10px;display:flex;align-items:center;gap:4px;color:var(--color-text-secondary)"><span style="width:8px;height:8px;border-radius:50%;background:${CO[i%CO.length]};display:inline-block"></span>${r.e.nome||'#'+(i+1)}: ${pp(r.w*100)} (${f0(r.ht)})</span>`).join('');
+    document.getElementById('eqR').innerHTML=`<div style="font-size:10px;font-weight:500;color:var(--color-text-info);text-transform:uppercase;margin-bottom:5px">Rateio proporcional ao honorário total (Ctb + DP)</div><div class="rbar">${bars}</div><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px">${leg}</div>`;
+  } else document.getElementById('eqR').innerHTML='';
+}
+
+function renderEmps(){
+  const c=document.getElementById('econt');
+  if(!emps.length){c.innerHTML='<div style="padding:16px;text-align:center;color:var(--color-text-tertiary);font-size:12px;border:0.5px dashed var(--color-border-tertiary);border-radius:var(--border-radius-lg)">Adicione entidades.</div>';document.getElementById('gbar').innerHTML='';return;}
+  const rat=calcRateio();
+  const tRB=rat.reduce((a,r)=>a+calcEmp(r.e,r).rbTotal,0);
+  const tRes=rat.reduce((a,r)=>a+calcEmp(r.e,r).res,0);
+  const nm=document.getElementById('gn').value||'Grupo';
+  document.getElementById('gbar').innerHTML=`<div class="grupo-bar"><div style="font-size:14px;font-weight:500;color:var(--color-text-info)">${nm} · ${emps.length} ent.</div><div style="display:flex;gap:14px;font-size:11px;color:var(--color-text-info)"><div>Receita <span style="font-weight:500">${f0(tRB)}</span></div><div>Resultado <span style="font-weight:500" class="${tRes>=0?'pos':'neg'}">${f0(tRes)}</span></div><div>Margem <span style="font-weight:500" class="${tRes>=0?'pos':'neg'}">${tRB>0?pp(tRes/tRB*100):'—'}</span></div></div></div>`;
+
+  c.innerHTML=rat.map((r,idx)=>{
+    const e=r.e,res=calcEmp(e,r),isCC=e.tipo!=='normal',cor=CO[idx%CO.length],dp=res.dp;
+    let campos='';
+    if(!isCC){campos=`<div class="frow"><div class="fg" style="flex:2"><span class="fl">Nome</span><input type="text" value="${e.nome}" placeholder="Nome" oninput="uEmp(${e.id},'nome',this.value)"></div><div class="fg"><span class="fl">Segmento</span><select onchange="uEmp(${e.id},'seg',this.value)">${Object.entries(SN).map(([k,v])=>`<option value="${k}"${k===e.seg?' selected':''}>${v}</option>`).join('')}</select></div><div class="fg"><span class="fl">Região</span><select onchange="uEmp(${e.id},'regiao',+this.value)">${RG.map((n,i)=>`<option value="${i}"${i===e.regiao?' selected':''}>${n}</option>`).join('')}</select></div></div><div class="frow"><div class="fg"><span class="fl">Docs/mês</span><select onchange="uEmp(${e.id},'docs',+this.value)">${DC.map((n,i)=>`<option value="${i}"${i===e.docs?' selected':''}>${n}</option>`).join('')}</select></div><div class="fg"><span class="fl">Funcionários</span><select onchange="uEmp(${e.id},'func',+this.value)">${FU.map((n,i)=>`<option value="${i}"${i===e.func?' selected':''}>${n}</option>`).join('')}</select></div></div>`;}
+    else{campos=`<div class="frow"><div class="fg" style="flex:2"><span class="fl">Nome</span><input type="text" value="${e.nome}" placeholder="Nome" oninput="uEmp(${e.id},'nome',this.value)"></div></div>`;}
+    let ccB='';
+    if(e.tipo==='incorporadora'){const cc=ccP(),obs=e.obras||[];ccB=`<div class="cc-box"><div style="font-size:11px;font-weight:500;color:#993C1D;text-transform:uppercase;margin-bottom:6px">Incorporadora — ${obs.length} empreend. · Ctb: ${fmt(honCtb(e))}</div><div class="itbl"><div class="ihr"><span>Empreendimento</span><span>Fase</span><span>Honorário</span><span></span></div>${obs.map((o,i)=>{const b=i===0?cc.i1:cc.ia;const fi=o.fase??2;return`<div class="ir"><input type="text" value="${o.nome}" style="flex:1;min-width:70px" oninput="emps.find(x=>x.id===${e.id}).obras.find(x=>x.id===${o.id}).nome=this.value"><div style="display:flex;gap:3px">${fbI(e.id,o.id,fi,'sFO')}</div><span style="font-weight:500;color:${FS[fi].c}">${fmt(b*FS[fi].p)}</span><button class="btn btn-del" onclick="rmO(${e.id},${o.id})">x</button></div>`;}).join('')}</div><button class="btn btn-add" style="font-size:11px" onclick="addO(${e.id})">+ Empreend.</button></div>`;}
+    if(e.tipo==='spe'){const cc=ccP(),sps=e.spes||[];ccB=`<div class="cc-box"><div style="font-size:11px;font-weight:500;color:#993C1D;text-transform:uppercase;margin-bottom:6px">SPE — ${sps.length} soc. · Ctb: ${fmt(honCtb(e))}</div><div class="itbl"><div class="ihr"><span>Sociedade</span><span>Fase</span><span>Honorário</span><span></span></div>${sps.map(s=>{const fi=s.fase??2;return`<div class="ir"><input type="text" value="${s.nome}" style="flex:1;min-width:70px" oninput="emps.find(x=>x.id===${e.id}).spes.find(x=>x.id===${s.id}).nome=this.value"><div style="display:flex;gap:3px">${fbI(e.id,s.id,fi,'sSF')}</div><span style="font-weight:500;color:${FS[fi].c}">${fmt(ccP().sp*FS[fi].p)}</span><button class="btn btn-del" onclick="rmS(${e.id},${s.id})">x</button></div>`;}).join('')}</div><button class="btn btn-add" style="font-size:11px" onclick="addS(${e.id})">+ SPE</button></div>`;}
+    const dpB=`<div class="dp-box"><div style="font-size:11px;font-weight:500;color:var(--color-text-info);text-transform:uppercase;margin-bottom:6px">DP — ${dp.tot} vida${dp.tot!==1?'s':''} (${dp.cob} cobrada${dp.cob!==1?'s':''}) · ${fmt(dp.total)}/mês</div><div style="display:flex;gap:10px;flex-wrap:wrap;font-size:12px"><div class="fg"><span class="fl">Pró-labore</span><input type="number" min="0" max="50" value="${e.prol}" oninput="uEmp(${e.id},'prol',+this.value)"></div><div class="fg"><span class="fl">Funcionários</span><input type="number" min="0" max="200" value="${e.nfunc}" oninput="uEmp(${e.id},'nfunc',+this.value)"></div><div class="fg"><span class="fl">RPA</span><input type="number" min="0" max="50" value="${e.nrpa}" oninput="uEmp(${e.id},'nrpa',+this.value)"></div><div class="fg"><span class="fl">Consignado</span><input type="number" min="0" max="200" value="${e.nconsig}" oninput="uEmp(${e.id},'nconsig',+this.value)"></div></div><div style="font-size:11px;color:var(--color-text-tertiary);margin-top:6px">Vidas: ${dp.cob} × ${f0(dpPar().v)} = ${fmt(dp.recVidas)} + Consig: ${e.nconsig||0} × ${f0(dpPar().c)} = ${fmt(dp.recConsig)}</div></div>`;
+    const sum=`${pp(r.w*100)} · Ctb: ${f0(res.ctb)} + DP: ${f0(dp.total)} = ${f0(res.rbTotal)}`;
+    return`<div class="card ${isCC?'cc':''}"><div class="ch" onclick="togE(${e.id})"><span style="font-size:11px;color:var(--color-text-tertiary);min-width:12px">${e.open?'▾':'▸'}</span><span style="font-size:10px;font-weight:500;padding:1px 6px;border-radius:3px;background:${cor}22;color:${cor}">${String(idx+1).padStart(2,'0')}</span><span style="font-size:13px;font-weight:500;flex:1">${e.nome||'(sem nome)'} <span class="badge ${isCC?'bcc':'bnorm'}">${e.tipo==='incorporadora'?'Inc.':e.tipo==='spe'?'SPE':'Emp.'}</span></span><span style="font-size:11px;color:var(--color-text-tertiary);white-space:nowrap">${sum}</span><button class="btn btn-del" onclick="event.stopPropagation();rmE(${e.id})" style="margin-left:6px">x</button></div><div class="cb ${e.open?'open':''}">${campos}${ccB}${dpB}<div class="rinfo">Rateio: <strong style="color:${cor}">${pp(r.w*100)}</strong> (peso: ${f0(r.ht)}) · CSP: ${fmt(r.csT)} · Desp: ${fmt(res.desp)} · Resultado: <strong class="${res.res>=0?'pos':'neg'}">${fmt(res.res)}</strong> (${pp(res.mReal)})</div></div></div>`;
+  }).join('');
+}
+
+function renderCons(){
+  if(!emps.length||!eq.length){document.getElementById('dreEl').innerHTML='<div style="padding:20px;text-align:center;color:var(--color-text-tertiary);font-size:12px">Configure equipe e entidades.</div>';document.getElementById('metEl').innerHTML='';document.getElementById('crcEl').innerHTML='';return;}
+  const rat=calcRateio(),R=rat.map(r=>({...r,...calcEmp(r.e,r)}));
+  const tRB=R.reduce((a,r)=>a+r.rbTotal,0),tCtb=R.reduce((a,r)=>a+r.ctb,0),tDP=R.reduce((a,r)=>a+r.dp.total,0);
+  const tDed=R.reduce((a,r)=>a+r.ded,0),tRL=R.reduce((a,r)=>a+r.rl,0);
+  const tCSP=cspTot(),tLB=R.reduce((a,r)=>a+r.lb,0),tDesp=R.reduce((a,r)=>a+r.desp,0);
+  const tRes=R.reduce((a,r)=>a+r.res,0),tAlvo=R.reduce((a,r)=>a+r.mAlvo,0);
+  const mR=tRB>0?(tRes/tRB*100):0;
+  function dr(l,s,v,neg,ind,cls){const ic=ind?' i1':'';const vf=neg?`<span class="neg">(${fmt(v)})</span>`:fmt(v);return`<div class="dr ${cls||''}"><div><div class="dl${ic}">${l}</div>${s?`<div class="dsub${ic}">${s}</div>`:''}</div><div class="dv">${vf}</div><div class="dp2">${tRB>0?pp(v/tRB*100):'—'}</div></div>`;}
+  const nm=document.getElementById('gn').value||'Grupo';
+  let h=`<div class="dre-box"><div class="dh2"><div style="font-size:13px;font-weight:500">${nm} — DRE consolidado</div><div style="font-size:10px;color:var(--color-text-tertiary);margin-top:2px">${emps.length} ent. · Enc.: ${P.e}% · Simples ${aliq}% · Desp: ${P.d}% · Rateio proporcional ao honorário total (Ctb+DP)</div></div>`;
+  h+=`<div class="ds">1. Receita bruta (contabilidade + DP)</div>`;
+  R.forEach((r,i)=>{h+=dr(r.e.nome||'(sem nome)',`Ctb: ${fmt(r.ctb)} + DP: ${fmt(r.dp.total)} (${r.dp.tot}v, ${r.dp.cob} cob.) · peso ${pp(r.w*100)}`,r.rbTotal,false,true,'');});
+  h+=dr('(=) Receita bruta total',`Ctb: ${f0(tCtb)} + DP: ${f0(tDP)}`,tRB,false,false,'dt');
+  h+=`<div class="ds">2. Deduções</div>`;
+  h+=dr('Impostos',`Simples ${aliq}%`,tDed,true,true,'');
+  h+=dr('(=) Receita líquida','',tRL,false,false,'dt');
+  h+=`<div class="ds">3. CSP</div>`;
+  h+=dr('Salários puros','',cspPuro(),true,true,'');
+  h+=dr(`Encargos ${P.e}%`,'',cspEnc(),true,true,'');
+  h+=dr('(=) Lucro bruto','',tLB,false,false,'dt '+(tLB>=0?'pos':'neg'));
+  h+=`<div class="ds">4. Despesas (igualitário)</div>`;
+  h+=dr('Despesas fixas',`${f0(despPerE())} × ${emps.length}`,tDesp,true,true,'');
+  h+=`<div class="ds">5. Resultado</div>`;
+  const rc=tRes>=0?'pos':'neg';
+  h+=`<div class="dr dres"><div><div class="dl">Resultado real</div></div><div class="dv"><span class="${rc}">${fmt(tRes)}</span></div><div class="dp2"><span class="${rc}">${pp(mR)}</span></div></div>`;
+  h+=`<div class="dr" style="background:var(--color-background-success,#EAF3DE)"><div><div class="dl" style="color:#3B6D11;font-weight:500">Margem alvo</div></div><div class="dv" style="color:#3B6D11;font-weight:500">${fmt(tAlvo)}</div><div class="dp2">${pp(P.m)}</div></div>`;
+  const d=tRes-tAlvo;const dc=d>=0?'pos':'neg';
+  h+=`<div class="dr dt"><div><div class="dl i1">Δ vs alvo</div></div><div class="dv"><span class="${dc}">${d>=0?'+':''}${fmt(d)}</span></div><div class="dp2"><span class="${dc}">${(mR-P.m).toFixed(1)}pp</span></div></div>`;
+  h+=`<div class="ds">6. Por entidade</div>`;
+  R.forEach((r,i)=>{const c2=r.res>=0?'pos':'neg';h+=`<div class="dr"><div><div class="dl i1" style="color:${CO[i%CO.length]}">${r.e.nome||'(sem nome)'}</div><div class="dsub i1">Ctb: ${f0(r.ctb)} + DP: ${f0(r.dp.total)} · Res: <span class="${c2}">${f0(r.res)}</span> (${pp(r.mReal)})</div></div><div class="dv">${fmt(r.rbTotal)}</div><div class="dp2" style="font-weight:500;color:${CO[i%CO.length]}">${pp(r.w*100)}</div></div>`;});
+  h+='</div>';
+  document.getElementById('dreEl').innerHTML=h;
+  document.getElementById('metEl').innerHTML=`<div class="mc"><div class="ml">Receita total</div><div class="mv">${f0(tRB)}</div><div class="ms">Ctb: ${f0(tCtb)} + DP: ${f0(tDP)}</div></div><div class="mc"><div class="ml">Resultado</div><div class="mv ${tRes>=0?'pos':'neg'}">${f0(tRes)}</div><div class="ms">${pp(mR)}</div></div><div class="mc"><div class="ml">Alvo (${P.m}%)</div><div class="mv">${f0(tAlvo)}</div><div class="ms">Δ: <span class="${dc}">${d>=0?'+':''}${f0(d)}</span></div></div><div class="mc"><div class="ml">Custo equipe</div><div class="mv">${f0(cspTot())}</div><div class="ms">Puro: ${f0(cspPuro())} + Enc: ${f0(cspEnc())}</div></div>`;
+
+  // CRC COMPARATIVO
+  let crc=`<div class="crc-sec"><div class="crc-head">Comparativo: honorário praticado vs CRC-SC 2025</div><div class="crc-row crc-hdr"><span>Entidade</span><span style="text-align:right">Praticado (Ctb+DP)</span><span style="text-align:right">Ref. CRC-SC</span><span style="text-align:right">Gap</span><span style="text-align:center">Diagnóstico</span></div>`;
+  let tPrat=0,tCRC=0;
+  R.forEach((r,i)=>{
+    const isCC=r.e.tipo!=='normal';
+    let ref,refLabel,gap,gc,diag;
+    if(!isCC){
+      ref=getCRC(r.e.seg||'comercio',r.e.docs||0,r.e.func||0,r.e.regiao||0);
+      refLabel=`${SN[r.e.seg]||'Comércio'} · Simples · ${RG[r.e.regiao||0]} · ${DC[r.e.docs||0]} · ${FU[r.e.func||0]}`;
+      gap=ref>0?((r.rbTotal-ref)/ref*100):0;
+      gc=gap>20?'#854F0B':gap>=-10?'#1D9E75':'#A32D2D';
+      diag=gap>20?'<span class="badge bwarn">Acima — justificar</span>':gap>=-10?'<span class="badge bok">Alinhado</span>':gap>=-30?'<span class="badge bdanger">Abaixo — reajustar</span>':'<span class="badge bdanger">Urgente</span>';
+    } else {
+      ref=honPlenoCC(r.e);
+      refLabel='Honorário pleno (todas F3)';
+      const pctPleno=ref>0?(r.ctb/ref*100):0;
+      gap=ref>0?((r.rbTotal-ref)/ref*100):0;
+      gc=pctPleno>=80?'#1D9E75':pctPleno>=50?'#BA7517':'#A32D2D';
+      diag=pctPleno>=80?'<span class="badge bok">Próximo pleno</span>':pctPleno>=50?'<span class="badge bwarn">Intermediário</span>':'<span class="badge bdanger">Fase baixa</span>';
+    }
+    tPrat+=r.rbTotal;tCRC+=ref;
+    crc+=`<div class="crc-row"><div><div style="font-weight:500;color:${CO[i%CO.length]}">${r.e.nome||'(sem nome)'}</div><div style="font-size:10px;color:var(--color-text-tertiary)">${refLabel}</div></div><div style="text-align:right;font-weight:500">${fmt(r.rbTotal)}</div><div style="text-align:right">${fmt(ref)}</div><div style="text-align:right;font-weight:500;color:${gc}">${gap>=0?'+':''}${pp(gap)}</div><div style="text-align:center">${diag}</div></div>`;
+  });
+  const tG=tCRC>0?((tPrat-tCRC)/tCRC*100):0;
+  crc+=`<div class="crc-row" style="background:var(--color-background-secondary);font-weight:500"><span>Total</span><span style="text-align:right">${fmt(tPrat)}</span><span style="text-align:right">${fmt(tCRC)}</span><span style="text-align:right;color:${tG>=0?'#1D9E75':'#A32D2D'}">${tG>=0?'+':''}${pp(tG)}</span><span></span></div></div>`;
+  document.getElementById('crcEl').innerHTML=crc;
+}
+
+function renderAll(){renderEq();renderEmps();}
+function setCt(t){['clt','pj','mix'].forEach(x=>document.getElementById('ct-'+x).classList.toggle('active',x===t));if(t==='clt'){document.getElementById('pE').value=68;P.e=68;}else if(t==='pj'){document.getElementById('pE').value=0;P.e=0;}sP();}
+function sP(){P.h=+document.getElementById('pH').value;P.i=+document.getElementById('pI').value;P.e=+document.getElementById('pE').value;P.d=+document.getElementById('pD').value;P.m=+document.getElementById('pM').value;aliq=+document.getElementById('tS').value;document.getElementById('pvH').textContent=P.h+'h';document.getElementById('pvI').textContent=P.i+'%';document.getElementById('pvE').textContent=P.e+'%';document.getElementById('pvD').textContent=P.d+'%';document.getElementById('pvM').textContent=P.m+'%';document.getElementById('tvS').textContent=aliq.toFixed(1)+'%';renderAll();}
+function showTab(t){['grupo','cons','params'].forEach(id=>document.getElementById('tab-'+id).style.display=id===t?'':'none');document.querySelectorAll('.tabs .tab').forEach((el,i)=>el.classList.toggle('active',['grupo','cons','params'][i]===t));if(t==='cons')renderCons();}
+
+// INIT — exemplo WF Construtora
+addC('g1',0,20);addC('sr',0,40);addC('pl',0,60);addC('aux',0,30);
+addE('normal');emps[0].nome='Construtora WF Ltda';emps[0].seg='comercio';emps[0].regiao=1;emps[0].docs=1;emps[0].func=1;emps[0].prol=2;emps[0].nfunc=3;emps[0].nrpa=1;emps[0].nconsig=1;
+addE('spe');emps[1].nome='Aquarius Residence';emps[1].spes=[{id:1,nome:'Aquarius',fase:2}];emps[1].prol=1;
+addE('spe');emps[2].nome='Residencial Aura';emps[2].spes=[{id:1,nome:'Aura',fase:0}];emps[2].prol=1;
+addE('spe');emps[3].nome='Res. Sangiovese';emps[3].spes=[{id:1,nome:'Sangiovese',fase:1}];emps[3].prol=1;
+addE('spe');emps[4].nome='Montreal Towers';emps[4].spes=[{id:1,nome:'Montreal',fase:1}];emps[4].prol=1;
+addE('spe');emps[5].nome='Residencial Merlot';emps[5].spes=[{id:1,nome:'Merlot',fase:1}];emps[5].prol=1;
+addE('spe');emps[6].nome='Res. Aquamarine';emps[6].spes=[{id:1,nome:'Aquamarine',fase:1}];emps[6].prol=1;
+renderAll();
+</script>
